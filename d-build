@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# --quiet: Suppress the build output and print image ID on success
+# --iidfile filename
+# --force-rm : delete intermediate containers.
+docker image build --iidfile fuseki-id --force-rm -t afs/fuseki .

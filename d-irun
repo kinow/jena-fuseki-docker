@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+#DOCKER_TAG="andys/afs-2:exp1"
+DOCKER_TAG="afs/fuseki"
+
+if [[ $# == 0 ]]
+then
+    echo "No arguments for the Fuseki server" 1>&2
+    exit 1
+fi
+
+# Run with volumes.
+# Map the the $MNT area to the Fuskei layout in the docker container.
+
+MNT=$PWD/mnt
+mkdir -p $MNT
+mkdir -p $MNT/log
+mkdir -p $MNT/data
+
+LOG=$MNT/log/fuseki.log
+rm -f $LOG
+touch $LOG
+
+tail -f $LOG &
+TAIL_PID=$!
+trap "kill $TAIL_PID" EXIT
+
+#ENV="--env DEBUG=1"
+
+# Run blocking, delete on exit.
+
+docker run -p 3030:3030 -i --rm --name Fuseki-$$ \
+       --mount "type=bind,src=$MNT/data,dst=/var/fuseki/data" \
+       --mount "type=bind,src=$MNT/log,dst=/var/fuseki/log" \
+       $ENV $DOCKER_TAG "$@"

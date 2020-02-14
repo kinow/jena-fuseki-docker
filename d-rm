@@ -1,0 +1,16 @@
+#!/bin/bash
+
+CIDFILE=fuseki.cid
+
+if [ ! -e "$CIDFILE" ]
+then
+    echo "Can't find container id file $CIRDFILE" 1>&2
+    exit 1
+fi
+
+docker container rm -f $(cat fuseki.cid )
+
+if [ $? = 0 ]
+then
+    rm $CIDFILE
+fi

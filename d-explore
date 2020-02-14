@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+#DOCKER_TAG="andys/afs-2:exp1"
+DOCKER_TAG="afs/fuseki"
+
+# Run with volumes.
+# Map the the $MNT area to the Fuskei layout in the docker container.
+
+MNT=$PWD/mnt
+
+# Run blocking, delete on exit.
+
+docker run -p 3030:3030 -it --rm --name Fuseki-$$ \
+       --mount "type=bind,src=$MNT/data,dst=/var/fuseki/data" \
+       --mount "type=bind,src=$MNT/log,dst=/var/fuseki/log" \
+       --entrypoint "/bin/bash" $DOCKER_TAG
